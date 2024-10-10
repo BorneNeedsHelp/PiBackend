@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pi Calculation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        #pi-value {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #status {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dynamic Pi Calculation</h1>
+    <div class="container">
+        <label for="time-duration">Select Time Duration:</label>
+        <select id="time-duration">
+            <option value="600">10 mins</option>
+            <option value="1200">20 mins</option>
+            <option value="1800">30 mins</option>
+            <option value="3600">1 hour</option>
+            <option value="7200">2 hours</option>
+            <option value="18000">5 hours</option>
+        </select>
+        <br><br>
+        <label for="cpu-power">CPU Power:</label>
+        <select id="cpu-power">
+            <option value="50">50% CPU</option>
+            <option value="100">100% CPU</option>
+        </select>
+        <br><br>
+        <button onclick="startCalculation()">Start Calculating Pi</button>
+        <div id="pi-value">Current Pi: --</div>
+        <div id="status">Status: Not started</div>
+    </div>
+
+    <script>
+        let intervalId;
+
+        function startCalculation() {
+            const duration = document.getElementById("time-duration").value;
+            const cpuPower = document.getElementById("cpu-power").value;
+            const statusElement = document.getElementById("status");
+            const piValueElement = document.getElementById("pi-value");
+
+            statusElement.textContent = "Status: Running";
+
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+
+            intervalId = setInterval(() => {
+                fetch(`/calculate-pi?duration=${duration}&cpu=${cpuPower}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        piValueElement.textContent = `Current Pi: ${data.pi}`;
+                    });
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
